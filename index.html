@@ -1,0 +1,825 @@
+python3 << 'PYEOF'
+import base64
+
+def load_b64(path):
+    with open(path, 'rb') as f:
+        return base64.b64encode(f.read()).decode()
+
+banner = load_b64('/mnt/user-data/uploads/1000086909.png')
+team = load_b64('/mnt/user-data/uploads/1000094450.png')
+logo = load_b64('/mnt/user-data/uploads/1000085962__1_.png')
+
+portraits = {}
+names_map = {
+    'priscila': '/home/claude/portraits/spec-000.png',
+    'waaza':    '/home/claude/portraits/spec-001.png',
+    'linda':    '/home/claude/portraits/spec-002.png',
+    'noe':      '/home/claude/portraits/spec-003.png',
+    'levi':     '/home/claude/portraits/spec-004.png',
+    'yanick':   '/home/claude/portraits/spec-005.png',
+}
+for name, path in names_map.items():
+    portraits[name] = load_b64(path)
+
+specialists = [
+    {
+        'name': 'Priscila',
+        'key': 'priscila',
+        'role': 'Acompañamiento y Clarificación Existencial',
+        'color': '#C084A0',
+        'hora': '10:00',
+        'credencial': 'Especialista en escucha activa y metodología psicoespiritual personalizada',
+        'desc': 'Determina con precisión quirúrgica qué necesita cada persona: si escucha, orientación o intervención. Trabaja con adultos en encuadre riguroso, adaptando el enfoque —científico o espiritual— a la singularidad de cada caso.',
+        'logro': 'Encuadre clínico sin excepciones. Cero casos sin protocolo.',
+    },
+    {
+        'name': 'El Waaza',
+        'key': 'waaza',
+        'role': 'Intervención Estratégica y Cambio Humano',
+        'color': '#7EB8D4',
+        'hora': '11:30',
+        'credencial': 'Facilitador de células humanas de hasta 5,000 personas simultáneas — eventos AA nivel nacional',
+        'desc': 'Ha operado dinámicas grupales masivas. Sabe leer una sala, clasificar necesidades colectivas y activar el cambio sin que nadie lo sienta como imposición. Articulador táctico de primer nivel.',
+        'logro': '+5,000 personas en un solo evento. Resultados documentados.',
+    },
+    {
+        'name': 'Linda',
+        'key': 'linda',
+        'role': 'Reestructuración Psicoespiritual',
+        'color': '#C8956A',
+        'hora': '13:00',
+        'credencial': 'Doctora en psicología · Adscrita al Poder Judicial de la Federación',
+        'desc': 'Doctora. Trabaja con los estándares más altos del sistema judicial federal mexicano. Su metodología desmantel dependencias y patrones limitantes con precisión clínica y exigencia absoluta.',
+        'logro': 'Doctorado + validación institucional federal. No es coach.',
+    },
+    {
+        'name': 'Noé',
+        'key': 'noe',
+        'role': 'Medicina Tradicional y Chamanismo',
+        'color': '#7BAE8E',
+        'hora': '14:30',
+        'credencial': 'Especialista en la dimensión espiritual del ser humano con protocolo psicosocial previo',
+        'desc': 'Aborda lo que la ciencia convencional no puede clasificar. No improvisa: inicia con diagnóstico psicosocial riguroso antes de cualquier intervención. La "otra ciencia" con metodología verificable.',
+        'logro': 'Diagnóstico antes de intervención. Sin excepciones.',
+    },
+    {
+        'name': 'Levi',
+        'key': 'levi',
+        'role': 'Sanación Integral y Encuentro Personal',
+        'color': '#9B8FCC',
+        'hora': '16:00',
+        'credencial': '+7,000 consultantes atendidos a lo largo de su trayectoria profesional',
+        'desc': 'Siete mil personas. No seguidores, no suscriptores: personas que se sentaron frente a él a trabajar su vida. Proceso sin estructuras rígidas, 100% adaptado a cada historia. El volumen habla.',
+        'logro': '+7,000 casos atendidos. La experiencia no se discute.',
+    },
+    {
+        'name': 'Yanick',
+        'key': 'yanick',
+        'role': 'Neurobiología y Optimización Conductual',
+        'color': '#4A9BA8',
+        'hora': '17:30',
+        'credencial': 'Desarrollador del método O.M.I. · IA de análisis bioacústico · Estudios internacionales · 4 idiomas',
+        'desc': 'Arquitecto del sistema clínico de Konecta. Desarrolló una IA clínica propia basada en análisis bioacústico de voz. Formación internacional, cuatro idiomas, grado médico. Interviene directamente sobre la química cerebral con hipnosis, EMDR, Gestalt y terapia dialéctica transpersonal.',
+        'logro': 'IA clínica desarrollada. Método propio registrado. Estudios en el extranjero.',
+    },
+]
+
+# Build specialist cards
+cards = ""
+for i, s in enumerate(specialists):
+    flex = "row" if i % 2 == 0 else "row-reverse"
+    cards += f"""
+    <div class="spec-card" data-i="{i}">
+      <div class="spec-inner" style="flex-direction:{flex}">
+        <div class="spec-portrait-wrap">
+          <div class="spec-portrait-frame" style="--c:{s['color']}">
+            <img src="data:image/png;base64,{portraits[s['key']]}" alt="{s['name']}">
+            <div class="spec-num-badge">0{i+1}</div>
+          </div>
+          <div class="spec-time" style="color:{s['color']}">{s['hora']} h</div>
+        </div>
+        <div class="spec-content">
+          <p class="spec-eyebrow">Especialista #{i+1}</p>
+          <h3 class="spec-name" style="color:{s['color']}">{s['name']}</h3>
+          <p class="spec-role">{s['role'].upper()}</p>
+          <div class="spec-credencial">
+            <span class="cred-icon">◈</span>
+            <span>{s['credencial']}</span>
+          </div>
+          <p class="spec-desc">{s['desc']}</p>
+          <div class="spec-logro" style="border-left-color:{s['color']}">
+            <span class="logro-label">RESULTADO</span>
+            <span class="logro-text">{s['logro']}</span>
+          </div>
+        </div>
+      </div>
+    </div>"""
+
+html = f"""<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Konecta: El Experimento — Propuesta Interna</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400;1,600&family=Raleway:wght@200;300;400;500;600;700;800&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+*{{margin:0;padding:0;box-sizing:border-box}}
+:root{{
+  --gold:#C9A84C;--gold-l:#E8D5A3;--gold-d:#8B6914;
+  --dark:#08080E;--dark2:#0F0F18;--dark3:#151522;--dark4:#1A1A2A;
+  --text:#EEEEF5;--dim:#8888A8;--dimmer:#55556A;
+}}
+html{{scroll-behavior:smooth}}
+body{{font-family:'Raleway',sans-serif;background:var(--dark);color:var(--text);overflow-x:hidden}}
+
+/* ── NAV ── */
+.nav{{
+  position:fixed;top:0;left:0;right:0;z-index:200;
+  display:flex;align-items:center;justify-content:space-between;
+  padding:.9rem 2.5rem;
+  background:rgba(8,8,14,.88);
+  backdrop-filter:blur(20px);
+  border-bottom:1px solid rgba(201,168,76,.1);
+}}
+.nav-logo{{width:48px;filter:drop-shadow(0 0 8px rgba(201,168,76,.4))}}
+.nav-title{{font-family:'Space Mono',monospace;font-size:.65rem;letter-spacing:.25em;color:var(--gold)}}
+.nav-badge{{
+  font-family:'Space Mono',monospace;font-size:.6rem;
+  color:var(--dimmer);letter-spacing:.15em;
+  border:1px solid rgba(201,168,76,.15);
+  padding:.3rem .8rem;
+}}
+
+/* ── HERO ── */
+.hero{{
+  position:relative;min-height:100vh;
+  display:flex;flex-direction:column;
+  align-items:center;justify-content:center;
+  overflow:hidden;
+}}
+.hero-bg{{
+  position:absolute;inset:0;
+  background-image:url("data:image/png;base64,{banner}");
+  background-size:cover;background-position:center 25%;
+  filter:brightness(.25) saturate(1.3);
+}}
+.hero-vignette{{
+  position:absolute;inset:0;
+  background:
+    radial-gradient(ellipse 80% 60% at 50% 0%,rgba(201,168,76,.12) 0%,transparent 65%),
+    linear-gradient(to bottom,transparent 40%,var(--dark) 100%);
+}}
+.hero-content{{position:relative;z-index:2;text-align:center;padding:2rem;max-width:860px}}
+.hero-logo{{
+  width:130px;margin:0 auto 2rem;
+  filter:drop-shadow(0 0 40px rgba(201,168,76,.55));
+  animation:pulse 3.5s ease-in-out infinite;
+}}
+@keyframes pulse{{0%,100%{{filter:drop-shadow(0 0 30px rgba(201,168,76,.4))}}50%{{filter:drop-shadow(0 0 55px rgba(201,168,76,.75))}}}}
+
+.hero-pre{{
+  font-family:'Space Mono',monospace;font-size:.65rem;
+  letter-spacing:.45em;color:var(--gold);text-transform:uppercase;
+  margin-bottom:1.8rem;opacity:.75;
+}}
+.hero-konecta{{
+  font-family:'Raleway',sans-serif;font-weight:800;
+  font-size:clamp(1rem,2.5vw,1.4rem);
+  letter-spacing:.6em;color:rgba(255,255,255,.5);
+  text-transform:uppercase;margin-bottom:.4rem;
+}}
+.hero-title{{
+  font-family:'Cormorant Garamond',serif;
+  font-size:clamp(4rem,10vw,9rem);
+  font-weight:300;line-height:.9;
+  color:#fff;margin-bottom:.5rem;letter-spacing:-.02em;
+}}
+.hero-title em{{color:var(--gold);font-style:italic}}
+.hero-sub{{
+  font-family:'Cormorant Garamond',serif;
+  font-size:clamp(1rem,2.5vw,1.6rem);
+  font-weight:300;font-style:italic;
+  color:var(--gold-l);letter-spacing:.12em;margin-bottom:2.5rem;
+}}
+.hero-hook{{
+  font-size:clamp(.9rem,1.5vw,1.1rem);
+  font-weight:300;color:var(--dim);
+  max-width:580px;margin:0 auto 3rem;
+  line-height:1.9;letter-spacing:.03em;
+}}
+.hero-hook strong{{color:var(--text);font-weight:500}}
+
+.hero-stats{{
+  display:flex;align-items:center;justify-content:center;
+  gap:0;border:1px solid rgba(201,168,76,.25);
+  background:rgba(201,168,76,.04);
+  backdrop-filter:blur(12px);
+  overflow:hidden;
+}}
+.stat-item{{
+  padding:1.2rem 2.5rem;text-align:center;
+  border-right:1px solid rgba(201,168,76,.15);
+}}
+.stat-item:last-child{{border-right:none}}
+.stat-big{{
+  font-family:'Cormorant Garamond',serif;
+  font-size:2rem;font-weight:600;
+  color:var(--gold);line-height:1;
+}}
+.stat-label{{
+  font-family:'Space Mono',monospace;
+  font-size:.58rem;letter-spacing:.2em;
+  color:var(--dimmer);text-transform:uppercase;margin-top:.3rem;
+}}
+
+.scroll-cue{{
+  position:absolute;bottom:2rem;left:50%;transform:translateX(-50%);
+  display:flex;flex-direction:column;align-items:center;gap:.4rem;
+  color:var(--dimmer);font-family:'Space Mono',monospace;font-size:.55rem;
+  letter-spacing:.3em;z-index:2;
+  animation:scrollpulse 2.2s ease-in-out infinite;
+}}
+@keyframes scrollpulse{{0%,100%{{opacity:.3;transform:translateX(-50%) translateY(0)}}50%{{opacity:.8;transform:translateX(-50%) translateY(5px)}}}}
+.scroll-line{{width:1px;height:36px;background:linear-gradient(to bottom,var(--gold),transparent)}}
+
+/* ── SECTIONS ── */
+section{{padding:6rem 2rem}}
+.inner{{max-width:1100px;margin:0 auto}}
+.s-eye{{
+  font-family:'Space Mono',monospace;font-size:.6rem;
+  letter-spacing:.4em;color:var(--gold);
+  text-transform:uppercase;margin-bottom:.8rem;
+}}
+.s-title{{
+  font-family:'Cormorant Garamond',serif;
+  font-size:clamp(2rem,4vw,3.2rem);
+  font-weight:300;line-height:1.1;color:#fff;margin-bottom:1rem;
+}}
+.s-title em{{color:var(--gold);font-style:italic}}
+.gold-hr{{
+  width:60px;height:1px;
+  background:linear-gradient(90deg,transparent,var(--gold),transparent);
+  margin:1.5rem 0;
+}}
+
+/* ── WHY SECTION ── */
+.why-sec{{background:var(--dark2)}}
+.why-grid{{
+  display:grid;grid-template-columns:1fr 1fr;
+  gap:4rem;align-items:center;margin-top:3rem;
+}}
+.why-img-wrap{{position:relative}}
+.why-img{{
+  width:100%;display:block;
+  filter:brightness(.82) saturate(.9);
+}}
+.why-img-border{{
+  position:absolute;inset:-6px;
+  border:1px solid rgba(201,168,76,.18);
+  pointer-events:none;
+}}
+.why-text p{{
+  font-size:1rem;font-weight:300;
+  line-height:1.9;color:var(--dim);margin-bottom:1.2rem;
+}}
+.why-text p strong{{color:var(--text);font-weight:500}}
+.why-text .pull{{
+  font-family:'Cormorant Garamond',serif;
+  font-size:1.5rem;font-style:italic;
+  color:var(--gold-l);line-height:1.5;
+  border-left:2px solid var(--gold);
+  padding-left:1.5rem;margin:2rem 0;
+}}
+
+/* ── EXPERIMENT REFRAME ── */
+.reframe-sec{{background:var(--dark3)}}
+.reframe-grid{{
+  display:grid;grid-template-columns:repeat(3,1fr);
+  gap:1.5rem;margin-top:3rem;
+}}
+.reframe-card{{
+  padding:2.5rem 2rem;
+  background:rgba(201,168,76,.04);
+  border:1px solid rgba(201,168,76,.1);
+  position:relative;overflow:hidden;
+  transition:border-color .3s,transform .3s;
+}}
+.reframe-card:hover{{border-color:rgba(201,168,76,.4);transform:translateY(-3px)}}
+.reframe-card::after{{
+  content:'';position:absolute;top:0;left:0;right:0;height:2px;
+  background:linear-gradient(90deg,transparent,var(--gold),transparent);
+}}
+.rc-label{{
+  font-family:'Space Mono',monospace;font-size:.6rem;
+  letter-spacing:.3em;color:var(--dimmer);margin-bottom:1rem;
+}}
+.rc-word{{
+  font-family:'Cormorant Garamond',serif;font-size:2rem;
+  color:rgba(255,255,255,.15);font-weight:300;
+  text-decoration:line-through;margin-bottom:.3rem;
+}}
+.rc-arrow{{color:var(--gold);font-size:1.2rem;margin-bottom:.5rem}}
+.rc-new{{
+  font-family:'Cormorant Garamond',serif;font-size:2rem;
+  color:#fff;font-weight:600;font-style:italic;margin-bottom:1rem;
+}}
+.rc-why{{
+  font-size:.85rem;font-weight:300;
+  color:var(--dim);line-height:1.7;
+}}
+
+/* ── SPECIALISTS ── */
+.spec-sec{{background:var(--dark)}}
+.spec-intro{{
+  font-size:1rem;font-weight:300;
+  color:var(--dim);line-height:1.9;
+  max-width:680px;margin-bottom:4rem;
+}}
+.spec-card{{
+  margin-bottom:5rem;
+  opacity:0;transform:translateY(25px);
+  transition:opacity .7s,transform .7s;
+}}
+.spec-card.vis{{opacity:1;transform:translateY(0)}}
+.spec-inner{{display:flex;gap:3.5rem;align-items:flex-start}}
+.spec-portrait-wrap{{flex-shrink:0;width:260px;position:relative}}
+.spec-portrait-frame{{
+  border:1px solid color-mix(in srgb, var(--c) 30%, transparent);
+  overflow:hidden;position:relative;
+  box-shadow:0 0 40px color-mix(in srgb, var(--c) 15%, transparent);
+}}
+.spec-portrait-frame img{{
+  width:100%;height:370px;object-fit:cover;
+  object-position:center top;display:block;
+  filter:saturate(.8);transition:filter .4s;
+}}
+.spec-card:hover .spec-portrait-frame img{{filter:saturate(1.1)}}
+.spec-num-badge{{
+  position:absolute;top:10px;left:10px;
+  font-family:'Space Mono',monospace;font-size:.7rem;
+  color:var(--gold);
+  background:rgba(8,8,14,.8);
+  padding:.3rem .6rem;
+  border:1px solid rgba(201,168,76,.3);
+}}
+.spec-time{{
+  font-family:'Space Mono',monospace;font-size:.75rem;
+  font-weight:700;text-align:center;margin-top:.8rem;
+  letter-spacing:.1em;
+}}
+.spec-content{{flex:1;padding-top:.5rem}}
+.spec-eyebrow{{
+  font-family:'Space Mono',monospace;font-size:.58rem;
+  letter-spacing:.3em;color:var(--dimmer);margin-bottom:.6rem;
+}}
+.spec-name{{
+  font-family:'Cormorant Garamond',serif;
+  font-size:2.8rem;font-weight:300;line-height:1;
+  margin-bottom:.4rem;
+}}
+.spec-role{{
+  font-size:.7rem;font-weight:600;
+  text-transform:uppercase;letter-spacing:.2em;
+  color:var(--dim);margin-bottom:1.2rem;
+}}
+.spec-credencial{{
+  display:flex;align-items:flex-start;gap:.6rem;
+  font-size:.82rem;color:var(--gold-l);
+  font-style:italic;font-weight:300;
+  margin-bottom:1.2rem;line-height:1.5;
+}}
+.cred-icon{{color:var(--gold);flex-shrink:0;margin-top:.15rem}}
+.spec-desc{{
+  font-size:.95rem;color:var(--dim);
+  line-height:1.85;font-weight:300;margin-bottom:1.2rem;
+}}
+.spec-logro{{
+  border-left:2px solid;padding-left:1rem;
+}}
+.logro-label{{
+  display:block;font-family:'Space Mono',monospace;
+  font-size:.55rem;letter-spacing:.3em;
+  color:var(--dimmer);margin-bottom:.3rem;
+}}
+.logro-text{{
+  font-size:.88rem;color:var(--text);font-weight:500;
+}}
+
+/* ── SCHEDULE ── */
+.sched-sec{{background:var(--dark2)}}
+.timeline{{position:relative;margin-top:3rem;padding-left:1.5rem}}
+.timeline::before{{
+  content:'';position:absolute;left:0;top:0;bottom:0;width:1px;
+  background:linear-gradient(to bottom,transparent,var(--gold) 8%,var(--gold) 92%,transparent);
+}}
+.t-item{{
+  position:relative;padding:0 0 2.5rem 2.5rem;
+  display:grid;grid-template-columns:100px 1fr;gap:2rem;
+}}
+.t-item::before{{
+  content:'';position:absolute;left:-4px;top:5px;
+  width:9px;height:9px;border-radius:50%;
+  background:var(--gold);box-shadow:0 0 14px var(--gold);
+}}
+.t-time{{
+  font-family:'Space Mono',monospace;font-size:.8rem;
+  color:var(--gold);letter-spacing:.08em;padding-top:.15rem;
+}}
+.t-name{{
+  font-family:'Cormorant Garamond',serif;
+  font-size:1.25rem;color:#fff;margin-bottom:.25rem;
+}}
+.t-desc{{font-size:.85rem;color:var(--dim);font-weight:300}}
+
+/* ── ACCESS ── */
+.access-sec{{background:var(--dark3)}}
+.access-box{{
+  max-width:700px;margin:3rem auto 0;
+  border:1px solid rgba(201,168,76,.2);
+  background:rgba(201,168,76,.04);
+  padding:3.5rem;text-align:center;position:relative;
+}}
+.access-box::before,.access-box::after{{
+  content:'';position:absolute;left:0;right:0;height:1px;
+  background:linear-gradient(90deg,transparent,var(--gold),transparent);
+}}
+.access-box::before{{top:0}}
+.access-box::after{{bottom:0}}
+.price-label{{
+  font-family:'Space Mono',monospace;font-size:.6rem;
+  letter-spacing:.45em;color:var(--dimmer);margin-bottom:.8rem;
+}}
+.price-main{{
+  font-family:'Cormorant Garamond',serif;
+  font-size:5rem;font-weight:300;color:var(--gold);
+  line-height:1;margin-bottom:.3rem;
+}}
+.price-currency{{font-size:2rem;vertical-align:super;margin-right:.2rem}}
+.price-note{{
+  font-size:.82rem;color:var(--dim);
+  font-weight:300;margin-bottom:2rem;
+}}
+.includes{{
+  display:grid;grid-template-columns:1fr 1fr;
+  gap:.8rem;text-align:left;margin-bottom:2rem;
+}}
+.inc{{
+  display:flex;align-items:flex-start;gap:.6rem;
+  font-size:.85rem;color:var(--dim);font-weight:300;
+  line-height:1.5;
+}}
+.inc-dot{{color:var(--gold);flex-shrink:0}}
+
+/* ── B2B LAYER ── */
+.b2b-sec{{
+  background:var(--dark);
+  border-top:1px solid rgba(201,168,76,.08);
+}}
+.b2b-inner{{
+  border:1px solid rgba(201,168,76,.15);
+  background:linear-gradient(135deg,rgba(201,168,76,.06),rgba(201,168,76,.02));
+  padding:4rem;position:relative;overflow:hidden;
+  margin-top:3rem;
+}}
+.b2b-inner::before{{
+  content:'';position:absolute;top:-40px;right:-40px;
+  width:200px;height:200px;border-radius:50%;
+  background:radial-gradient(circle,rgba(201,168,76,.08),transparent 70%);
+}}
+.b2b-eyebrow{{
+  font-family:'Space Mono',monospace;font-size:.6rem;
+  letter-spacing:.45em;color:var(--gold);margin-bottom:.8rem;
+}}
+.b2b-title{{
+  font-family:'Cormorant Garamond',serif;
+  font-size:clamp(1.8rem,3.5vw,2.8rem);
+  font-weight:300;color:#fff;margin-bottom:1.5rem;line-height:1.2;
+}}
+.b2b-title em{{color:var(--gold);font-style:italic}}
+.b2b-text{{
+  font-size:.97rem;color:var(--dim);
+  line-height:1.9;font-weight:300;margin-bottom:1.5rem;
+  max-width:700px;
+}}
+.b2b-text strong{{color:var(--text);font-weight:500}}
+.b2b-logos{{
+  display:flex;align-items:center;gap:2rem;
+  flex-wrap:wrap;margin-top:2rem;
+}}
+.b2b-logo-chip{{
+  font-family:'Space Mono',monospace;font-size:.68rem;
+  letter-spacing:.1em;color:var(--dimmer);
+  border:1px solid rgba(201,168,76,.15);
+  padding:.4rem 1rem;
+  background:rgba(201,168,76,.04);
+}}
+.b2b-arrow{{
+  font-size:1.2rem;color:var(--gold);margin:0 .5rem;
+}}
+
+/* ── TEAM CLOSER ── */
+.team-sec{{background:var(--dark2)}}
+.team-img-wrap{{position:relative;margin-top:3rem;overflow:hidden}}
+.team-img-wrap img{{
+  width:100%;display:block;
+  filter:brightness(.75) saturate(.85);
+}}
+.team-img-wrap::after{{
+  content:'';position:absolute;inset:0;
+  background:linear-gradient(to top,var(--dark2) 0%,transparent 45%);
+}}
+.team-quote{{
+  position:absolute;bottom:2.5rem;left:0;right:0;
+  text-align:center;z-index:2;padding:0 2rem;
+}}
+.team-quote p{{
+  font-family:'Cormorant Garamond',serif;
+  font-size:clamp(1.3rem,2.5vw,2rem);
+  font-weight:300;color:#fff;font-style:italic;
+}}
+.team-quote p em{{color:var(--gold)}}
+
+/* ── FOOTER ── */
+.footer{{
+  background:var(--dark);
+  border-top:1px solid rgba(201,168,76,.08);
+  padding:3rem 2rem;text-align:center;
+}}
+.footer-logo{{width:70px;margin:0 auto 1.2rem;opacity:.55}}
+.footer-text{{
+  font-family:'Space Mono',monospace;
+  font-size:.62rem;color:var(--dimmer);
+  letter-spacing:.15em;line-height:2;
+}}
+
+/* ── FADE UTILITY ── */
+.fade{{opacity:0;transform:translateY(22px);transition:opacity .7s,transform .7s}}
+.fade.vis{{opacity:1;transform:none}}
+
+/* ── RESPONSIVE ── */
+@media(max-width:768px){{
+  .why-grid,.reframe-grid{{grid-template-columns:1fr}}
+  .spec-inner{{flex-direction:column!important}}
+  .spec-portrait-wrap{{width:100%;max-width:300px;margin:0 auto}}
+  .includes{{grid-template-columns:1fr}}
+  .hero-stats{{flex-direction:column}}
+  .stat-item{{border-right:none;border-bottom:1px solid rgba(201,168,76,.15)}}
+  .stat-item:last-child{{border-bottom:none}}
+  .t-item{{grid-template-columns:80px 1fr}}
+  .access-box{{padding:2rem 1.5rem}}
+  .b2b-inner{{padding:2.5rem 1.5rem}}
+}}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav class="nav">
+  <img src="data:image/png;base64,{logo}" class="nav-logo" alt="Konecta">
+  <span class="nav-title">EL EXPERIMENTO</span>
+  <span class="nav-badge">DOM · 3 · AGO · 2025</span>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-bg"></div>
+  <div class="hero-vignette"></div>
+  <div class="hero-content">
+    <img src="data:image/png;base64,{logo}" class="hero-logo" alt="Konecta Tu Alma">
+    <p class="hero-pre">Documento interno · Propuesta de evento</p>
+    <p class="hero-konecta">Konecta</p>
+    <h1 class="hero-title">El <em>Experi&shy;mento</em></h1>
+    <p class="hero-sub">La primera experiencia pública donde distintas formas de comprender al ser humano se someten a prueba frente a una audiencia real.</p>
+    <p class="hero-hook">
+      No una conferencia. No un congreso. No un retiro.<br>
+      <strong>Un experimento.</strong> Y nadie quiere perderse un experimento.
+    </p>
+    <div class="hero-stats">
+      <div class="stat-item">
+        <div class="stat-big">3 AGO</div>
+        <div class="stat-label">Domingo 2025</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-big">$150</div>
+        <div class="stat-label">MXN · Pase único</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-big">6</div>
+        <div class="stat-label">Especialistas</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-big">+7K</div>
+        <div class="stat-label">Casos respaldados</div>
+      </div>
+    </div>
+  </div>
+  <div class="scroll-cue">
+    <div class="scroll-line"></div>
+    <span>Leer propuesta</span>
+  </div>
+</section>
+
+<!-- WHY -->
+<section class="why-sec">
+  <div class="inner">
+    <div class="fade">
+      <p class="s-eye">La idea que lo cambia todo</p>
+      <h2 class="s-title">No están vendiendo terapias.<br><em>Están validando una hipótesis.</em></h2>
+    </div>
+    <div class="why-grid">
+      <div class="why-img-wrap fade">
+        <div class="why-img-border"></div>
+        <img src="data:image/png;base64,{team}" class="why-img" alt="Equipo Konecta">
+      </div>
+      <div class="why-text fade">
+        <p>Priscila. Waaza. Linda. Noé. Levi. Yanick. <strong>Ninguno hace lo mismo.</strong> Algunos podrían estar en desacuerdo entre sí. Y aun así están juntos.</p>
+        <div class="pull">¿Puede existir una comunidad donde distintas formas de entender al ser humano convivan sin jerarquías? Eso es lo que ningún coach, terapeuta, chamán, psicólogo o influencer está haciendo.</div>
+        <p>Eso es muchísimo más interesante que un evento de bienestar. Es <strong>un experimento social en tiempo real</strong>. Y la audiencia no es espectadora: es parte de él.</p>
+        <p>Los escépticos entran a desmitificarlo. Los creyentes entran a comprobarlo. <strong>Ambos llegan al mismo lugar.</strong> Eso es engagement genuino, no algoritmo.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- REFRAME -->
+<section class="reframe-sec">
+  <div class="inner">
+    <div class="fade">
+      <p class="s-eye">Por qué funciona la palabra</p>
+      <h2 class="s-title">El reframe que lo hace <em>imparable</em></h2>
+    </div>
+    <div class="reframe-grid">
+      <div class="reframe-card fade">
+        <div class="rc-label">Categoría habitual</div>
+        <div class="rc-word">Webinar</div>
+        <div class="rc-arrow">↓</div>
+        <div class="rc-new">Evento</div>
+        <p class="rc-why">Cualquiera tiene un evento. Es ruido en el feed. No genera curiosidad real ni compromiso de asistencia.</p>
+      </div>
+      <div class="reframe-card fade">
+        <div class="rc-label">Lo que Konecta propone</div>
+        <div class="rc-word">Evento</div>
+        <div class="rc-arrow">↓</div>
+        <div class="rc-new">Experimento</div>
+        <p class="rc-why">Psicológicamente, <em>experimento</em> genera curiosidad, incertidumbre, expectativa, participación. <strong>Nadie quiere perderse un experimento.</strong></p>
+      </div>
+      <div class="reframe-card fade">
+        <div class="rc-label">El posicionamiento real</div>
+        <div class="rc-word">Espiritual</div>
+        <div class="rc-arrow">↓</div>
+        <div class="rc-new">Misticismo + Verificación</div>
+        <p class="rc-why">Si se presentan solo como espirituales, pierden a los escépticos. Si solo como científicos, pierden a quienes buscan significado. <em>El experimento captura ambos.</em></p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SPECIALISTS -->
+<section class="spec-sec">
+  <div class="inner">
+    <div class="fade">
+      <p class="s-eye">El equipo</p>
+      <h2 class="s-title">Seis credenciales que hacen<br><em>imposible el argumento de charlatanería.</em></h2>
+    </div>
+    <p class="spec-intro fade">
+      A menos que traigas un postdoctorado de Harvard, no tienes con qué. Esto no es arrogancia: es la descripción objetiva del nivel que tiene este equipo. Cada especialista opera desde su eje con igual peso. La horizontalidad no es filosofía: es la estructura que hace funcionar el experimento.
+    </p>
+    {cards}
+  </div>
+</section>
+
+<!-- SCHEDULE -->
+<section class="sched-sec">
+  <div class="inner">
+    <div class="fade">
+      <p class="s-eye">Programación · Domingo 3 de agosto</p>
+      <h2 class="s-title">La ruta del <em>día completo</em></h2>
+    </div>
+    <div class="timeline fade">
+      <div class="t-item">
+        <div class="t-time">9:30</div>
+        <div><div class="t-name">Apertura del Experimento</div><div class="t-desc">Bienvenida · Presentación del equipo · Encuadre del experimento · Activación colectiva</div></div>
+      </div>
+      <div class="t-item">
+        <div class="t-time">10:00</div>
+        <div><div class="t-name">Priscila</div><div class="t-desc">Clarificación del propósito y construcción de paz interior</div></div>
+      </div>
+      <div class="t-item">
+        <div class="t-time">11:30</div>
+        <div><div class="t-name">El Waaza</div><div class="t-desc">Mapeo de necesidades y activación del cambio funcional</div></div>
+      </div>
+      <div class="t-item">
+        <div class="t-time">13:00</div>
+        <div><div class="t-name">Linda</div><div class="t-desc">Liberación de patrones y resignificación de la historia personal</div></div>
+      </div>
+      <div class="t-item">
+        <div class="t-time">14:30</div>
+        <div><div class="t-name">Noé</div><div class="t-desc">Limpieza energética y reconexión con la dimensión espiritual</div></div>
+      </div>
+      <div class="t-item">
+        <div class="t-time">16:00</div>
+        <div><div class="t-name">Levi</div><div class="t-desc">Sanación emocional profunda y encuentro con el ser esencial</div></div>
+      </div>
+      <div class="t-item">
+        <div class="t-time">17:30</div>
+        <div><div class="t-name">Yanick</div><div class="t-desc">Integración neurobiológica y cierre del ciclo evolutivo</div></div>
+      </div>
+      <div class="t-item">
+        <div class="t-time">19:00</div>
+        <div><div class="t-name">Cierre del Experimento</div><div class="t-desc">Integración colectiva · Resultados · Activación de comunidad · Siguiente fase</div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ACCESS -->
+<section class="access-sec">
+  <div class="inner">
+    <div class="fade">
+      <p class="s-eye">Modelo de acceso</p>
+      <h2 class="s-title">Fricción <em>cero.</em> Acceso <em>total.</em></h2>
+    </div>
+    <div class="access-box fade">
+      <p class="price-label">Pase único · Acceso completo a la jornada</p>
+      <div class="price-main"><span class="price-currency">$</span>150</div>
+      <p class="price-note">MXN · El precio es la barrera más baja posible. El objetivo no es el ingreso del evento: es el caso de estudio.</p>
+      <div class="includes">
+        <div class="inc"><span class="inc-dot">◈</span><span>Acceso a las 6 sesiones en vivo</span></div>
+        <div class="inc"><span class="inc-dot">◈</span><span>Grabación por 30 días</span></div>
+        <div class="inc"><span class="inc-dot">◈</span><span>Dinámicas grupales del Experimento</span></div>
+        <div class="inc"><span class="inc-dot">◈</span><span>Material complementario por especialista</span></div>
+        <div class="inc"><span class="inc-dot">◈</span><span>Acceso a comunidad Konecta</span></div>
+        <div class="inc"><span class="inc-dot">◈</span><span>Certificado de participación</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- B2B LAYER -->
+<section class="b2b-sec">
+  <div class="inner">
+    <div class="fade">
+      <p class="s-eye">La visión detrás del evento</p>
+      <h2 class="s-title">El experimento no es el destino.<br><em>Es la credencial.</em></h2>
+    </div>
+    <div class="b2b-inner fade">
+      <p class="b2b-eyebrow">FASE 2 · OUTSOURCING CORPORATIVO</p>
+      <h3 class="b2b-title">Si hicimos esto con una audiencia abierta,<br><em>imagina qué podemos hacer con tu empresa.</em></h3>
+      <p class="b2b-text">
+        El objetivo estratégico de Konecta: El Experimento no es generar ingresos por ticket. Es <strong>producir evidencia pública, medible y documentada</strong> de que este equipo puede transformar la conducta humana en un solo día, en formato grupal, sin jerarquías y con resultados verificables.
+      </p>
+      <p class="b2b-text">
+        Esa evidencia abre la conversación con <strong>empresas de alto nivel</strong> que buscan capacitación de personal con impacto real: bienestar organizacional, conductas funcionales, equipos de alto desempeño. Un mercado donde <strong>no existe ningún equipo multidisciplinario en México</strong> que opere como el nuestro.
+      </p>
+      <div class="b2b-logos">
+        <span class="b2b-logo-chip">BROXEL</span>
+        <span class="b2b-arrow">·</span>
+        <span class="b2b-logo-chip">GNP SEGUROS</span>
+        <span class="b2b-arrow">·</span>
+        <span class="b2b-logo-chip">AEROMÉXICO</span>
+        <span class="b2b-arrow">·</span>
+        <span class="b2b-logo-chip">Y SIMILARES</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- TEAM CLOSER -->
+<section class="team-sec">
+  <div class="inner">
+    <div class="fade">
+      <p class="s-eye">Quiénes somos</p>
+      <h2 class="s-title">Un equipo que estadísticamente<br><em>no debería existir.</em></h2>
+    </div>
+    <div class="team-img-wrap fade">
+      <img src="data:image/png;base64,{team}" alt="Equipo Konecta">
+      <div class="team-quote">
+        <p>"Mentes distintas. Métodos distintos. <em>Un solo experimento.</em>"</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer class="footer">
+  <img src="data:image/png;base64,{logo}" class="footer-logo" alt="Konecta">
+  <p class="footer-text">
+    KONECTA TU ALMA · EL EXPERIMENTO<br>
+    DOMINGO 3 DE AGOSTO 2025 · $150 MXN · VIRTUAL EN VIVO<br><br>
+    DOCUMENTO INTERNO · USO EXCLUSIVO DEL EQUIPO KONECTA
+  </p>
+</footer>
+
+<script>
+const obs = new IntersectionObserver(entries => {{
+  entries.forEach(e => {{ if(e.isIntersecting) e.target.classList.add('vis'); }});
+}}, {{threshold: 0.08}});
+document.querySelectorAll('.fade, .spec-card').forEach(el => obs.observe(el));
+</script>
+</body>
+</html>"""
+
+with open('/home/claude/experimento_konecta.html','w',encoding='utf-8') as f:
+    f.write(html)
+print(f"HTML: {len(html):,} chars")
+PYEOF
